@@ -91,3 +91,51 @@ def create_booking(request: BookingCreate) -> BookingReceipt:
 	)
 	_booking_requests.append(receipt)
 	return receipt
+
+from app.db.supabase_client import get_service_client
+
+
+def create_log(patient_id: str, payload: dict) -> dict:
+    db = get_service_client()
+    row = {**payload, "patient_id": patient_id}
+    return db.table("symptom_logs").insert(row).execute().data[0]
+
+
+def list_logs(
+    patient_id: str, limit: int = 50, offset: int = 0
+) -> list[dict]:
+    db = get_service_client()
+    res = (
+        db.table("symptom_logs")
+        .select("*")
+        .eq("patient_id", patient_id)
+        .order("logged_at", desc=True)
+        .range(offset, offset + limit - 1)
+        .execute()
+    )
+    return res.data or []
+
+
+def get_log(patient_id: str, log_id: str) -> dict | None:
+    db = get_service_client()
+    res = (
+        db.table("symptom_logs")
+        .select("*")
+        .eq("id", log_id)
+        .eq("patient_id", patient_id)     # defense-in-depth; RLS also enforces
+        .maybe_single()
+        .execute()
+    )
+    return res.data if res else None
+
+
+def delete_log(patient_id: str, log_id: str) -> bool:
+    db = get_service_client()
+    res = (
+        db.table("symptom_logs")
+        .delete()
+        .eq("id", log_id)
+        .eq("patient_id", patient_id)
+        .execute()
+    )
+    return bool(res.data)

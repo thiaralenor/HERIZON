@@ -44,3 +44,21 @@ class BookingReceipt(BaseModel):
 	hospital_name: str | None = None
 	appointment_date: date
 	appointment_time: str
+
+from datetime import datetime
+from uuid import UUID
+
+from pydantic import BaseModel, Field
+
+
+class SymptomLogCreate(BaseModel):
+    symptoms: str = Field(min_length=1, max_length=2000)
+    severity: int | None = Field(default=None, ge=1, le=10)
+
+
+class SymptomLogOut(BaseModel):
+    id: UUID
+    patient_id: UUID
+    symptoms: str
+    severity: int | None
+    logged_at: datetime
