@@ -1,0 +1,1 @@
+"""Hospital business logic will be defined here."""
