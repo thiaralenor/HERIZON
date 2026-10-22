@@ -10,3 +10,5 @@ backend/.venv/
 .env
 .env.*
 !.env.example
+HERIZON/backend/.env
+HERIZON/backend/.env.example
