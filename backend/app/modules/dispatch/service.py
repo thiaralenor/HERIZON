@@ -140,3 +140,27 @@ def cancel_dispatch(dispatch_id: str, patient_id: str) -> dict | None:
             "id", current["ambulance_id"]
         ).execute()
     return get_dispatch(dispatch_id)
+
+def list_for_hospital(hospital_id: str, limit: int = 50) -> list[dict]:
+    db = get_service_client()
+    res = (
+        db.table("dispatch_requests")
+        .select(_SELECT)
+        .eq("hospital_id", hospital_id)
+        .order("created_at", desc=True)
+        .limit(limit)
+        .execute()
+    )
+    return [_flatten(r) for r in (res.data or [])]
+
+
+def get_admin_hospital(user_id: str) -> dict | None:
+    db = get_service_client()
+    res = (
+        db.table("hospitals")
+        .select("id, name")
+        .eq("created_by", user_id)
+        .maybe_single()
+        .execute()
+    )
+    return res.data if res else None

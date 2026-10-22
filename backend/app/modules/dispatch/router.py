@@ -62,3 +62,12 @@ def cancel(
     if not d:
         raise HTTPException(status_code=404, detail="Dispatch not found")
     return d
+
+@router.get("/hospital/me", response_model=list[DispatchOut])
+def hospital_dispatches(
+    user: CurrentUser = Depends(require_role("hospital_admin")),
+):
+    hospital = service.get_admin_hospital(user.id)
+    if not hospital:
+        raise HTTPException(status_code=404, detail="No hospital registered for this admin")
+    return service.list_for_hospital(hospital["id"])

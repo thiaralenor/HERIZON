@@ -32,4 +32,5 @@ class DoctorOut(BaseModel):
     consultation_fee: float | None
     slug: str
     is_active: bool
+    serves_neighborhoods: list[str] = []      # ← new
     created_at: datetime

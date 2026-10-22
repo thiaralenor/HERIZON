@@ -1,2 +1,6 @@
-// Configure the Supabase client here once project credentials are available.
-export const supabase = null;
+import { createClient } from '@supabase/supabase-js'
+
+export const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY,
+)

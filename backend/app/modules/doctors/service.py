@@ -2,9 +2,10 @@ from app.db.supabase_client import get_service_client
 
 # Supabase's PostgREST lets us embed related rows in one query — this is what
 # we use to join doctors -> profiles (name) and doctors -> hospitals (name).
+# backend/app/modules/doctors/service.py — add to _SELECT string
 _SELECT = (
     "id, profile_id, doctor_type, hospital_id, specialty, bio, "
-    "consultation_fee, slug, is_active, created_at, "
+    "consultation_fee, slug, is_active, created_at, serves_neighborhoods, "
     "profiles:profile_id(full_name), hospitals:hospital_id(name)"
 )
 
